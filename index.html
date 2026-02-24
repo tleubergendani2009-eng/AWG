@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AWG Thermodynamics Analyzer | International Version</title>
+    <title>AWG Thermodynamics Analyzer | International Level</title>
     <style>
         :root {
             --primary: #004494;
@@ -104,7 +104,7 @@
 
 <div class="container">
     <h1>AWG Thermodynamics Analyzer 💧</h1>
-    <p class="subtitle">Интерактивный расчет добычи воды (Международный стандарт)</p>
+    <p class="subtitle">Интерактивный расчет добычи воды (Версия для республиканского этапа)</p>
     
     <div class="input-group">
         <input type="text" id="cityInput" placeholder="Город (напр. Almaty)">
@@ -128,7 +128,7 @@
                 <strong>День (Десорбция)</strong>
                 Улица: <span id="tDayOut"></span>°C, <span id="rhDayOut"></span>%<br>
                 Внутри AWG: <span class="greenhouse-effect" id="tDayIn"></span>°C, <span class="greenhouse-effect" id="rhDayIn"></span>%<br>
-                <em>Коррекция: +25°C, -10% RH</em>
+                <em>Эффект: +45°C, -45% RH</em>
             </div>
         </div>
 
@@ -185,16 +185,13 @@
             const rhDayOut = day.main.humidity;
 
             // ==========================================
-// КОРРЕКЦИЯ ПАРНИКОВОГО ЭФФЕКТА (ОПТИМИЗИРОВАННАЯ)
-// ==========================================
-// 1. Температура: внутри качественного бокса под солнцем 
-// температура легко поднимается на 45-50 градусов выше уличной.
-const tDayIn = tDayOut + 45; 
+            // КОРРЕКЦИЯ ДЛЯ ВЫСОКОЙ ЭФФЕКТИВНОСТИ
+            // ==========================================
+            // Имитируем мощный солнечный нагрев внутри бокса
+            const tDayIn = tDayOut + 45; // +45 градусов к улице
+            const rhDayIn = Math.max(5, rhDayOut - 45); // -45 пунктов от влажности
 
-// 2. Влажность: при таком нагреве относительная влажность внутри 
-// падает очень сильно. Минус 40-50 пунктов — это реально.
-const rhDayIn = Math.max(5, rhDayOut - 45);
-            // ФОРМУЛЫ
+            // ФОРМУЛЫ (Магнус-Тетенс)
             const pSatNight = 6.1094 * Math.exp((17.625 * tNight) / (tNight + 243.04));
             const pSatDay = 6.1094 * Math.exp((17.625 * tDayIn) / (tDayIn + 243.04));
             const pvNight = (rhNight / 100) * pSatNight;
@@ -206,7 +203,7 @@ const rhDayIn = Math.max(5, rhDayOut - 45);
             const deltaA = Math.max(0, aNight - aDay);
             const totalWater = mass * deltaA;
 
-            // ВЫВОД
+            // ВЫВОД В ИНТЕРФЕЙС
             document.getElementById('tNight').innerText = tNight.toFixed(1);
             document.getElementById('rhNight').innerText = rhNight;
             document.getElementById('tDayOut').innerText = tDayOut.toFixed(1);
